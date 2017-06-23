@@ -75,8 +75,10 @@ export default class EditControl extends LayersControl {
       }
     }
 
-    if (this.props.otherEvents) {
-      for(const params in this.props.otherEvents) {
+    let otherEvents = this.props.otherEvents;
+    if (otherEvents) {
+      for(const i in otherEvents) {
+        let params = otherEvents[i];
         changeEvent(params.name, params.func);
       }
     }
