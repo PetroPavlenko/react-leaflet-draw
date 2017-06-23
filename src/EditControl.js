@@ -22,6 +22,10 @@ export default class EditControl extends LayersControl {
     }, {}),
     onCreated: PropTypes.func,
     onMounted: PropTypes.func,
+    otherEvents: PropTypes.arrayOf(PropTypes.shape({
+      func: PropTypes.func,
+      name: PropTypes.string
+    })),
     draw: PropTypes.shape({
       polyline: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
       polygon: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
@@ -59,18 +63,28 @@ export default class EditControl extends LayersControl {
     onCreated && onCreated(e);
   };
 
-  componentWillMount() {
-    const { map } = this.context;
 
-    this.updateDrawControls();
+  _updateEvents = type => {
+    const changeEvent = this.context.map[type].bind(this.context.map);
 
-    map.on('draw:created', this.onDrawCreate);
+    changeEvent('draw:created', this.onDrawCreate);
 
-    for (const key in eventHandlers) {
+    for(const key in eventHandlers) {
       if (this.props[key]) {
-        map.on(eventHandlers[key], this.props[key]);
+        changeEvent(eventHandlers[key], this.props[key]);
       }
     }
+
+    if (this.props.otherEvents) {
+      for(const params in this.props.otherEvents) {
+        changeEvent(params.name, params.func);
+      }
+    }
+  };
+
+  componentWillMount() {
+    this.updateDrawControls();
+    this._updateEvents('on');
   }
 
   componentDidMount() {
@@ -80,16 +94,8 @@ export default class EditControl extends LayersControl {
   }
 
   componentWillUnmount() {
-    const { map } = this.context;
-    this.leafletElement.remove(map);
-
-    map.off('draw:created', this.onDrawCreate);
-
-    for (const key in eventHandlers) {
-      if (this.props[key]) {
-        map.off(eventHandlers[key], this.props[key]);
-      }
-    }
+    this.leafletElement.remove(this.context.map);
+    this._updateEvents('off');
   }
 
   componentDidUpdate(prevProps) {
