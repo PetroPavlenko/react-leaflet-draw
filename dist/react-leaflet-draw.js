@@ -151,10 +151,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var otherEvents = _this.props.otherEvents;
 	      if (otherEvents) {
-	        for (var i in otherEvents) {
-	          var params = otherEvents[i];
-	          changeEvent(params.name, params.func);
-	        }
+	        otherEvents.forEach(function (_ref2) {
+	          var name = _ref2.name,
+	              func = _ref2.func;
+	          return changeEvent(name, func);
+	        });
 	      }
 	    }, _this.updateDrawControls = function () {
 	      var layerContainer = _this.context.layerContainer;
