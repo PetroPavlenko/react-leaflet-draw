@@ -157,6 +157,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return changeEvent(name, func);
 	        });
 	      }
+	    }, _this.reset = function () {
+	      var map = _this.context.map;
+
+	      _this.leafletElement.remove(map);
+	      _this.updateDrawControls();
+	      _this.leafletElement.addTo(map);
 	    }, _this.updateDrawControls = function () {
 	      var layerContainer = _this.context.layerContainer;
 	      var _this$props = _this.props,
@@ -179,6 +185,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      _this.leafletElement = new L.Control.Draw(options); // eslint-disable-line
+
+	      _this._updateEvents('off');
+	      _this._updateEvents('on');
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 
@@ -186,7 +195,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.updateDrawControls();
-	      this._updateEvents('on');
 	    }
 	  }, {
 	    key: 'componentDidMount',
@@ -212,13 +220,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return false;
 	      }
 
-	      var map = this.context.map;
-
-
-	      this.leafletElement.remove(map);
-	      this.updateDrawControls();
-	      this.leafletElement.addTo(map);
-
+	      this.reset();
 	      return null;
 	    }
 	  }]);

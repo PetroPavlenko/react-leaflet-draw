@@ -83,7 +83,6 @@ export default class EditControl extends LayersControl {
 
   componentWillMount() {
     this.updateDrawControls();
-    this._updateEvents('on');
   }
 
   componentDidMount() {
@@ -105,14 +104,16 @@ export default class EditControl extends LayersControl {
       return false;
     }
 
-    const { map } = this.context;
+    this.reset();
+    return null;
+  }
 
+  reset = () => {
+    const { map } = this.context;
     this.leafletElement.remove(map);
     this.updateDrawControls();
     this.leafletElement.addTo(map);
-
-    return null;
-  }
+  };
 
   updateDrawControls = () => {
     const { layerContainer } = this.context;
@@ -133,5 +134,8 @@ export default class EditControl extends LayersControl {
     }
 
     this.leafletElement = new L.Control.Draw(options); // eslint-disable-line
+
+    this._updateEvents('off');
+    this._updateEvents('on');
   };
 }
